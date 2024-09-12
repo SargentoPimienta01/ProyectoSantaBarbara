@@ -12,11 +12,9 @@ def cargar_y_preprocesar_imagenes(directorio, tamaño=(128, 128)):
     for archivo in os.listdir(directorio):
         if archivo.endswith('.jpg') or archivo.endswith('.png'):
             ruta = os.path.join(directorio, archivo)
-            imagen = cv2.imread(ruta, cv2.IMREAD_GRAYSCALE)  # Leer en escala de grises
+            imagen = cv2.imread(ruta, cv2.IMREAD_GRAYSCALE) 
             if imagen is not None:
-                # Redimensionar la imagen
                 imagen = cv2.resize(imagen, tamaño)
-                # Normalizar los valores de los píxeles
                 imagen = imagen / 255.0
                 imagenes.append(imagen)
     return np.array(imagenes)

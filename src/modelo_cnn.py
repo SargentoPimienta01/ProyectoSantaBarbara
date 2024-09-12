@@ -14,17 +14,17 @@ def crear_modelo_cnn(tamaño_imagen=(128, 128)):
         layers.Conv2D(64, (3, 3), activation='relu'),
         layers.Flatten(),
         layers.Dense(64, activation='relu'),
-        layers.Dense(1, activation='sigmoid')  # Clasificación binaria
+        layers.Dense(1, activation='sigmoid') 
     ])
     return modelo
 
 # Cargar y preprocesar las imágenes
 data_dir = '../data/'
 imágenes = cargar_y_preprocesar_imagenes(data_dir)
-imágenes = np.expand_dims(imágenes, axis=-1)  # Añadir canal de dimensión
+imágenes = np.expand_dims(imágenes, axis=-1) 
 
 # Ajustar las etiquetas a la cantidad de imágenes
-etiquetas = np.array([0, 1, 0, 1, 0, 1])  # Asegúrate de que haya una etiqueta por imagen
+etiquetas = np.array([0, 1, 0, 1, 0, 1])
 
 # Verificar la cantidad de imágenes y etiquetas
 print(f'Cantidad de imágenes: {len(imágenes)}')
