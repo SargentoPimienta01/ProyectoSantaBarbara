@@ -6,30 +6,54 @@ import numpy as np
 # Directorio donde están almacenadas las imágenes
 data_dir = '../data/'
 
-# Función de colorimetría para análisis en espacio HSV
-def colorimetria(directorio, tamaño=(128, 128)):
-    imagenes = []
+# Función para detectar huevos en una imagen usando contornos
+def detectar_huevos(directorio, tamaño=(128, 128)):
+    huevos_detectados = []
     for archivo in os.listdir(directorio):
         if archivo.endswith('.jpg') or archivo.endswith('.png'):
             ruta = os.path.join(directorio, archivo)
             imagen = cv2.imread(ruta)
             if imagen is not None:
-                # Redimensionar la imagen
-                imagen = cv2.resize(imagen, tamaño)
-                
-                # Convertir la imagen de BGR a HSV para análisis de color
-                imagen_hsv = cv2.cvtColor(imagen, cv2.COLOR_BGR2HSV)
-                
-                # Extraer el canal de la tonalidad (Hue) para analizar la colorimetría
-                hue_channel = imagen_hsv[:, :, 0]  # Canal H
-                
-                # Agregar la imagen preprocesada y el análisis de tonalidad
-                imagenes.append({
-                    "original": imagen,
-                    "hsv": imagen_hsv,
-                    "hue": hue_channel
-                })
-    return imagenes
+                # Convertir la imagen a escala de grises
+                imagen_gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+
+                # Aplicar suavizado para eliminar ruido
+                imagen_gris = cv2.GaussianBlur(imagen_gris, (5, 5), 0)
+
+                # Detectar bordes usando Canny Edge Detection
+                bordes = cv2.Canny(imagen_gris, 50, 150)
+
+                # Encontrar contornos en la imagen
+                contornos, _ = cv2.findContours(bordes, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+                for contorno in contornos:
+                    # Crear un rectángulo alrededor de cada contorno (huevo)
+                    x, y, w, h = cv2.boundingRect(contorno)
+                    huevo = imagen[y:y + h, x:x + w]
+
+                    # Redimensionar el huevo a un tamaño fijo
+                    huevo = cv2.resize(huevo, tamaño)
+
+                    # Normalizar la imagen
+                    huevo = huevo / 255.0
+
+                    # Guardar el huevo detectado
+                    huevos_detectados.append(huevo)
+
+    return np.array(huevos_detectados)
+
+# Función de colorimetría para análisis en espacio HSV
+def colorimetria(imagen, tamaño=(128, 128)):
+    # Redimensionar la imagen
+    imagen = cv2.resize(imagen, tamaño)
+    
+    # Convertir la imagen de BGR a HSV para análisis de color
+    imagen_hsv = cv2.cvtColor(imagen, cv2.COLOR_BGR2HSV)
+    
+    # Extraer el canal de la tonalidad (Hue) para analizar la colorimetría
+    hue_channel = imagen_hsv[:, :, 0]  # Canal H
+
+    return hue_channel
 
 # Mostrar histograma de la tonalidad (Hue)
 def mostrar_histograma_color(imagenes):
@@ -41,7 +65,6 @@ def mostrar_histograma_color(imagenes):
         plt.ylabel('Frecuencia')
         plt.show()
 
-# Función para cargar y preprocesar imágenes en escala de grises
 def cargar_y_preprocesar_imagenes(directorio, tamaño=(128, 128)):
     imagenes = []
     for archivo in os.listdir(directorio):
@@ -54,6 +77,13 @@ def cargar_y_preprocesar_imagenes(directorio, tamaño=(128, 128)):
                 imagenes.append(imagen)
     return np.array(imagenes)
 
+# Mostrar los huevos detectados
+def contar_huevos(huevos):
+    for i, huevo in enumerate(huevos):
+        plt.imshow(cv2.cvtColor(huevo, cv2.COLOR_BGR2RGB))
+        plt.title(f'Huevo {i+1}')
+        plt.show()
+
 # Mostrar las imágenes preprocesadas en escala de grises
 def mostrar_imagenes(imagenes):
     for i, imagen in enumerate(imagenes):
@@ -62,6 +92,13 @@ def mostrar_imagenes(imagenes):
         plt.show()
 
 if __name__ == '__main__':
+    # Detección de huevos
+    huevos_detectados = detectar_huevos(data_dir)
+    if len(huevos_detectados) > 0:
+        mostrar_huevos(huevos_detectados)
+    else:
+        print("No se detectaron huevos.")
+
     # Colorimetría
     imagenes = colorimetria(data_dir)
     if imagenes:
