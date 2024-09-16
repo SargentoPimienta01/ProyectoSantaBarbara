@@ -1,7 +1,7 @@
 import tensorflow as tf
 from keras import layers, models
 import numpy as np
-from cargar_imagenes import cargar_y_preprocesar_imagenes
+from cargar_imagenes import cargar_y_preprocesar_imagenes, colorimetria
 
 # Definir el modelo CNN
 def crear_modelo_cnn(tamaño_imagen=(128, 128)):
@@ -14,16 +14,17 @@ def crear_modelo_cnn(tamaño_imagen=(128, 128)):
         layers.Conv2D(64, (3, 3), activation='relu'),
         layers.Flatten(),
         layers.Dense(64, activation='relu'),
-        layers.Dense(1, activation='sigmoid') 
+        layers.Dense(1, activation='sigmoid')  # Clasificación binaria
     ])
     return modelo
 
-# Cargar y preprocesar las imágenes
+# Cargar y preprocesar las imágenes en escala de grises
 data_dir = '../data/'
 imágenes = cargar_y_preprocesar_imagenes(data_dir)
-imágenes = np.expand_dims(imágenes, axis=-1) 
+imágenes = np.expand_dims(imágenes, axis=-1)  # Añadir canal de dimensión para cumplir con el input del modelo
 
 # Ajustar las etiquetas a la cantidad de imágenes
+# Esto debe ajustarse a tu dataset real
 etiquetas = np.array([0, 1, 0, 1, 0, 1])
 
 # Verificar la cantidad de imágenes y etiquetas
