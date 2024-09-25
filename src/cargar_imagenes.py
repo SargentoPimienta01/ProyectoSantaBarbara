@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Directorio donde están almacenadas las imágenes
-data_dir = '../data/'
+data_dir = 'data'
 
 # Función para detectar huevos en una imagen usando contornos
 def detectar_huevos(directorio, tamaño=(128, 128)):
@@ -86,7 +86,9 @@ def cargar_y_preprocesar_imagenes(directorio, tamaño=(128, 128)):
 # Mostrar los huevos detectados
 def mostrar_huevos(huevos):
     for i, huevo in enumerate(huevos):
-        plt.imshow(cv2.cvtColor(huevo, cv2.COLOR_BGR2RGB))
+        # Asegúrate de que la imagen esté en el rango correcto de tipo uint8
+        huevo_uint8 = (huevo * 255).astype(np.uint8)  # Convertir de float64 a uint8
+        plt.imshow(cv2.cvtColor(huevo_uint8, cv2.COLOR_BGR2RGB))
         plt.title(f'Huevo {i+1}')
         plt.show()
 
