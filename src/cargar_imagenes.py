@@ -26,6 +26,10 @@ def detectar_huevos(directorio, tamaño=(128, 128)):
                 # Encontrar contornos en la imagen
                 contornos, _ = cv2.findContours(bordes, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+                if len(contornos) == 0:
+                    print(f"No se detectaron huevos en la imagen {archivo}.")
+                    continue  # Pasar a la siguiente imagen si no hay huevos
+
                 for contorno in contornos:
                     # Crear un rectángulo alrededor de cada contorno (huevo)
                     x, y, w, h = cv2.boundingRect(contorno)
@@ -40,6 +44,8 @@ def detectar_huevos(directorio, tamaño=(128, 128)):
                     # Guardar el huevo detectado
                     huevos_detectados.append(huevo)
 
+    if len(huevos_detectados) == 0:
+        print("No se detectaron huevos en ninguna imagen.")
     return np.array(huevos_detectados)
 
 # Función de colorimetría para análisis en espacio HSV
@@ -78,7 +84,7 @@ def cargar_y_preprocesar_imagenes(directorio, tamaño=(128, 128)):
     return np.array(imagenes)
 
 # Mostrar los huevos detectados
-def contar_huevos(huevos):
+def mostrar_huevos(huevos):
     for i, huevo in enumerate(huevos):
         plt.imshow(cv2.cvtColor(huevo, cv2.COLOR_BGR2RGB))
         plt.title(f'Huevo {i+1}')
@@ -99,13 +105,16 @@ if __name__ == '__main__':
     else:
         print("No se detectaron huevos.")
 
-    # Colorimetría
-    imagenes = colorimetria(data_dir)
-    if imagenes:
-        mostrar_histograma_color(imagenes)
-    else:
-        print("No se encontraron imágenes.")
-    
+    # Colorimetría (solo se ejecuta si hay huevos detectados)
+    if len(huevos_detectados) > 0:
+        for huevo in huevos_detectados:
+            hue_channel = colorimetria(huevo)
+            plt.hist(hue_channel.ravel(), bins=180, range=(0, 180))
+            plt.title('Histograma de Hue')
+            plt.xlabel('Hue')
+            plt.ylabel('Frecuencia')
+            plt.show()
+
     # Preprocesamiento en escala de grises
     imagenes = cargar_y_preprocesar_imagenes(data_dir)
     if imagenes.any():
