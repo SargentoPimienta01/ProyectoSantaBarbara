@@ -10,7 +10,7 @@ data_dir = 'data'
 def detectar_huevos(directorio, tamaño=(128, 128)):
     huevos_detectados = []
     for archivo in os.listdir(directorio):
-        if archivo.endswith('.jpg') or archivo.endswith('.png'):
+        if archivo.endswith(('.jpg', '.jpeg', '.png', '.jpge')):
             ruta = os.path.join(directorio, archivo)
             imagen = cv2.imread(ruta)
             if imagen is not None:

@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from cargar_imagenes import detectar_huevos
 from tensorflow.keras.models import load_model
 
 # Cargar el modelo entrenado
