@@ -1,0 +1,7 @@
+_background_
+color
+huevo
+huevo_viable
+huevo_inviable
+textura
+ovoscopia

@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from cargar_imagenes import detectar_huevos
+from trash.cargar_imagenes import detectar_huevos
 import tensorflow as tf
 
 # Cargar el modelo entrenado

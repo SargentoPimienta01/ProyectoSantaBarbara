@@ -1,7 +1,7 @@
 import tensorflow as tf
 from keras import layers, models
 import numpy as np
-from cargar_imagenes import cargar_y_preprocesar_imagenes, colorimetria, detectar_huevos
+from trash.cargar_imagenes import cargar_y_preprocesar_imagenes, colorimetria, detectar_huevos
 
 # Definir el modelo CNN
 def crear_modelo_cnn(tamaño_imagen=(128, 128)):
