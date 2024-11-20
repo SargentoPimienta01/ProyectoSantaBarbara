@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
 from cargar_imagenes import detectar_huevos
-from tensorflow.keras.models import load_model
+import tensorflow as tf
 
 # Cargar el modelo entrenado
-modelo = load_model('modelo_cnn.h5')
+model = tf.keras.models.load_model('ruta_al_modelo/modelo_cnn.h5')
 
 # Función para preprocesar una imagen de prueba
 def preprocesar_imagen(ruta_imagen):
@@ -20,5 +20,5 @@ def preprocesar_imagen(ruta_imagen):
 imagen_prueba = preprocesar_imagen('../data/Prueba/Prueba02.jpeg')
 
 # Hacer la predicción
-prediccion = modelo.predict(imagen_prueba)
+prediccion = model.predict(imagen_prueba)
 print(f'Probabilidad de que el huevo sea viable: {prediccion[0][0]:.2f}')
